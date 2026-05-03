@@ -1,0 +1,7 @@
+[core]
+    remote = localremote
+['remote "driveremote"']
+    url = gdrive://1z8TRvxmoD4q2YRW8t_U2uG7Y1WVPGDwI
+    gdrive_acknowledge_abuse = true
+['remote "localremote"']
+    url = /home/zeco/dvc-remote-air-quality
