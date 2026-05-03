@@ -12,7 +12,7 @@ featurize:
   add_time_features: true 
 
 train:
-  n_estimators: 100
+  n_estimators: 200
   max_depth: 8
   min_samples_split: 4
   random_state: 42

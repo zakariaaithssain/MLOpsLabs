@@ -1,0 +1,7 @@
+{
+  "test_accuracy": 0.9317,
+  "test_f1": 0.9268,
+  "test_roc_auc": 0.9822,
+  "threshold_ok": true,
+  "n_test": 1479
+}
