@@ -1,0 +1,7 @@
+{
+  "val_accuracy": 0.9254,
+  "val_f1": 0.9183,
+  "val_roc_auc": 0.9829,
+  "n_train": 5128,
+  "n_features": 17
+}

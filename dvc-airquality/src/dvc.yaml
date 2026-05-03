@@ -1,0 +1,55 @@
+stages:
+  prepare:
+    cmd: python src/prepare.py
+    deps:
+      - src/prepare.py
+      - data/raw/AirQualityUCI.csv
+    params:
+      - prepare
+    outs: 
+      - data/processed/train.csv
+      - data/processed/val.csv
+      - data/processed/test.csv
+  
+  featurize:
+    cmd: python src/featurize.py
+    deps: 
+      - src/featurize.py
+      - data/processed/train.csv
+      - data/processed/val.csv
+      - data/processed/test.csv
+    params: 
+      - featurize
+      - prepare.target_col 
+    outs: 
+      - data/features/train_feat.csv
+      - data/features/val_feat.csv
+      - data/features/test_feat.csv
+
+  train: 
+    cmd: python src/train.py
+    deps: 
+      - src/train.py
+      - data/features/train_feat.csv
+      - data/features/val_feat.csv
+    params: 
+      - train 
+    outs: 
+      - models/model.pkl
+    metrics: 
+      - metrics/scores.json:
+          cache: false
+  
+  evaluate:
+    cmd: python src/evaluate.py 
+    deps: 
+      - src/evaluate.py
+      - models/model.pkl
+      - data/features/test_feat.csv
+    params:
+      - evaluate
+      - prepare.target_col
+    metrics: 
+      - metrics/report.json: 
+          cache: false
+    
