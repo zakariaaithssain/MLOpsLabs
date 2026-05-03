@@ -1,7 +1,7 @@
 import pandas as pd, yaml, os
 from sklearn.model_selection import train_test_split
 
-YAML_FILE = 'src/params.yaml'
+YAML_FILE = 'params.yaml'
 params = yaml.safe_load(open(YAML_FILE))['prepare']
 MISSING = params['missing_value']
 TARGET = params['target_col']

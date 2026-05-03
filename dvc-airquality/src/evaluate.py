@@ -2,7 +2,7 @@ import pandas as pd, yaml, json, pickle
 from sklearn.metrics import (accuracy_score, f1_score,
 roc_auc_score, classification_report, confusion_matrix)
 
-YAML_FILE = 'src/params.yaml'
+YAML_FILE = 'params.yaml'
 
 params = yaml.safe_load(open(YAML_FILE))['evaluate']
 model = pickle.load(open('models/model.pkl', 'rb'))

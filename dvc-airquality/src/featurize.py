@@ -1,7 +1,7 @@
 import pandas as pd, yaml, os
 
 
-YAML_FILE = 'src/params.yaml'
+YAML_FILE = 'params.yaml'
 
 params = yaml.safe_load(open(YAML_FILE))
 target_col = params['prepare']['target_col']

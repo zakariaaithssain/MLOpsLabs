@@ -4,7 +4,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 
 
-YAML_FILE =  'src/params.yaml'
+YAML_FILE =  'params.yaml'
 
 params = yaml.safe_load(open(YAML_FILE))['train']
 train = pd.read_csv('data/features/train_feat.csv')

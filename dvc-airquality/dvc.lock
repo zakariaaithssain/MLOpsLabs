@@ -1,0 +1,130 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/prepare.py
+    deps:
+    - path: data/raw/AirQualityUCI.csv
+      hash: md5
+      md5: a05a884eb5a0578e20c504cc48ba7c0d
+      size: 785065
+    - path: src/prepare.py
+      hash: md5
+      md5: b88158513cc3dfb13b7b3e6baa3c12b5
+      size: 1911
+    params:
+      params.yaml:
+        prepare:
+          test_size: 0.2
+          val_size: 0.1
+          random_state: 42
+          target_col: CO(GT)
+          missing_value: -200
+          co_high_threshold: 2.0
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 29293af92222d71becef2479a6be3b98
+      size: 139156
+    - path: data/processed/train.csv
+      hash: md5
+      md5: a6e5cbb5075a206be681cc53d307a559
+      size: 484028
+    - path: data/processed/val.csv
+      hash: md5
+      md5: 1f9aa53fee94a67c95083d06f9da80b3
+      size: 69464
+  featurize:
+    cmd: python src/featurize.py
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 29293af92222d71becef2479a6be3b98
+      size: 139156
+    - path: data/processed/train.csv
+      hash: md5
+      md5: a6e5cbb5075a206be681cc53d307a559
+      size: 484028
+    - path: data/processed/val.csv
+      hash: md5
+      md5: 1f9aa53fee94a67c95083d06f9da80b3
+      size: 69464
+    - path: src/featurize.py
+      hash: md5
+      md5: b3a133f16a1717df49620137ccc1626f
+      size: 2775
+    params:
+      params.yaml:
+        featurize:
+          normalize: true
+          drop_na_rows: true
+          add_time_features: true
+        prepare.target_col: CO(GT)
+    outs:
+    - path: data/features/test_feat.csv
+      hash: md5
+      md5: 9df1d0cbec5ae930a164822d94aeb83e
+      size: 461897
+    - path: data/features/train_feat.csv
+      hash: md5
+      md5: 9dcc813ff6e074996a8218a5fae4b385
+      size: 1601292
+    - path: data/features/val_feat.csv
+      hash: md5
+      md5: ed3eb17ba4b93808c6959adb481d3a12
+      size: 230557
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/features/train_feat.csv
+      hash: md5
+      md5: 9dcc813ff6e074996a8218a5fae4b385
+      size: 1601292
+    - path: data/features/val_feat.csv
+      hash: md5
+      md5: ed3eb17ba4b93808c6959adb481d3a12
+      size: 230557
+    - path: src/train.py
+      hash: md5
+      md5: 34d22362644a2ce7b80631ae79e5341a
+      size: 1839
+    params:
+      params.yaml:
+        train:
+          n_estimators: 100
+          max_depth: 8
+          min_samples_split: 4
+          random_state: 42
+    outs:
+    - path: metrics/scores.json
+      hash: md5
+      md5: b15fcbc23e2e7c388922c6fbf286dbf4
+      size: 112
+    - path: models/model.pkl
+      hash: md5
+      md5: b7a657e743822ce13a0ed1869b7271b4
+      size: 1840046
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/features/test_feat.csv
+      hash: md5
+      md5: 9df1d0cbec5ae930a164822d94aeb83e
+      size: 461897
+    - path: models/model.pkl
+      hash: md5
+      md5: b7a657e743822ce13a0ed1869b7271b4
+      size: 1840046
+    - path: src/evaluate.py
+      hash: md5
+      md5: ea3c973c883eb9e6f492b25400c7ee28
+      size: 1561
+    params:
+      params.yaml:
+        evaluate:
+          threshold: 0.8
+        prepare.target_col: CO(GT)
+    outs:
+    - path: metrics/report.json
+      hash: md5
+      md5: 95e805b8c74430bef5bd110732a4a40e
+      size: 118
