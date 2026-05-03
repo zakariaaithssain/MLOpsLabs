@@ -1,0 +1,8 @@
+/data/raw/*.csv
+/data/processed/
+/data/features/
+/models/
+/metrics/
+*.pkl
+*.joblib
+.DS_Store
