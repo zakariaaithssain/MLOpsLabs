@@ -39,3 +39,4 @@ def plot_confusion_matrix(y_true, y_pred, run_name, output_dir) -> str:
     path = os.path.join(output_dir, f'confusion_matrix_{run_name}.png')
     plt.tight_layout(); plt.savefig(path, dpi=100); plt.close()
     return path
+

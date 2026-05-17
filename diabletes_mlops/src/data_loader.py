@@ -10,7 +10,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import TARGET_COLUMN, TEST_SIZE, RANDOM_STATE, RAW_DIR
 
 
-
 def load_diabetes_dataset() -> pd.DataFrame:
     """
     Charge le dataset Pima Indians Diabetes depuis OpenML.
@@ -29,31 +28,29 @@ def load_diabetes_dataset() -> pd.DataFrame:
 
 
 
-def preprocess_data(df: pd.DataFrame):
-    """
-    Prepare les donnees : remplace les zeros aberrants,
-    realise le split train/test stratifie.
-    Retourne : X_train, X_test, y_train, y_test, feature_names
-    """
-    # Colonnes ou 0 est medicalement impossible
-    zero_invalid = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
 
+
+def preprocess_data(df: pd.DataFrame) -> tuple:
+    """
+    Prépare les données : remplace les zéros aberrants, split stratifié.  
+    Returns:
+    Tuple (X_train, X_test, y_train, y_test, feature_names)
+    """
+    zero_invalid = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
     for col in zero_invalid:
         if col in df.columns:
-            df[col] = df[col].replace(0, np.nan)
-            df[col] = df[col].fillna(df[col].median())
-            
+            df[col] = df[col].replace(0, np.nan).fillna(df[col].median())
     feature_names = [c for c in df.columns if c != TARGET_COLUMN]
-    X = df[feature_names].values
+    X = df[feature_names].values.astype(np.float64) # explicit type
     y = df[TARGET_COLUMN].values
-    X_train, X_test, y_train, y_test = train_test_split(
-    X, y,
-    test_size=TEST_SIZE,
-    random_state=RANDOM_STATE,
-    stratify=y # important : preserve le ratio 65/35
-    )
 
-    print(f'Train : {len(X_train)} | Test : {len(X_test)}')
+    # CORRECTION Bug 1 : stratify=y préserve le ratio de classes
+    X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=TEST_SIZE,
+    random_state=RANDOM_STATE,
+    )
+    # CORRECTION Bug 2 : PAS de StandardScaler ici.
+    # Le scaler est DANS le Pipeline → fitté uniquement sur X_train.
     return X_train, X_test, y_train, y_test, feature_names
 
 
@@ -66,3 +63,5 @@ def build_preprocessor(feature_names: list) -> ColumnTransformer:
     return ColumnTransformer(transformers=[
     ('num', numeric_transformer, list(range(len(feature_names))))
     ])
+
+

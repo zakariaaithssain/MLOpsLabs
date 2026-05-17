@@ -73,6 +73,7 @@ def train_and_track(
         print(f'Entrainement : {run_name}')
         start_time = time.time()
         pipeline.fit(X_train, y_train)
+
         training_time = time.time() - start_time
 
         # 4. Enregistrement des METRIQUES (train ET test)
@@ -92,6 +93,14 @@ def train_and_track(
         input_example = pd.DataFrame(X_test[:3], columns=feature_names)
         output_example = pd.DataFrame(y_pred[:3], columns=['Outcome'])
         signature = infer_signature(input_example, output_example)
+        
+# TP TESTING ---- 
+
+        # On extrait le classifieur SANS le preprocessing (bug), this gives bad prod because data is not normalized.
+        pipeline = pipeline.named_steps['classifier']
+        model_path = os.path.join(MODELS_DIR, f'{run_name}.pkl')
+        joblib.dump(pipeline, model_path)
+        #Sans le StandardScaler
         mlflow.sklearn.log_model(
                                 pipeline,
                                 name='model',
